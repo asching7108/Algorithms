@@ -8,9 +8,6 @@ import java.util.NoSuchElementException;
  * push         : O(1)
  * pop          : O(1)
  * isEmpty      : O(1)
- *
- * @param <T> generic type
- * @author Esther Lin
  */
 
 public class LinkedListStack<T> implements Stack<T> {

@@ -8,9 +8,6 @@ import java.util.NoSuchElementException;
  * enqueue      : O(1) amortized
  * dequeue      : O(1) amortized
  * isEmpty      : O(1)
- *
- * @param <T> generic type
- * @author Esther Lin
  */
 
 public class ResizingArrayQueue<T> implements Queue<T> {

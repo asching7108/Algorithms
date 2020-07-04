@@ -8,9 +8,6 @@ import java.util.NoSuchElementException;
  * enqueue      : O(1)
  * dequeue      : O(1)
  * isEmpty      : O(1)
- *
- * @param <T> generic type
- * @author Esther Lin
  */
 
 public class LinkedListQueue<T> implements Queue<T> {

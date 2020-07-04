@@ -1,8 +1,6 @@
 /**
  * Implements Weighted Quick Union with Path Compression.
  * Time Complexity for M union operations on N objects is N + M lg* N.
- *
- * @author Esther Lin
  */
 
 public class WeightedQuickUnion {
