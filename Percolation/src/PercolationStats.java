@@ -1,10 +1,11 @@
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 /**
  * Use Monte Carlo simulation to estimate the percolation threshold.
  *
- * @author Hsingyi Lin
+ * @author Esther Lin
  */
 
 public class PercolationStats {
@@ -88,8 +89,8 @@ public class PercolationStats {
         int t = Integer.parseInt(args[1]);
         PercolationStats ps = new PercolationStats(n, t);
         String conf = "[" + ps.confidenceLo() + ", " + ps.confidenceHi() + "]";
-        System.out.printf("%-23s %s %s%n", "mean", "=", ps.mean());
-        System.out.printf("%-23s %s %s%n", "stddev", "=", ps.stddev());
-        System.out.println("95% confidence interval = " + conf);
+        StdOut.printf("%-23s %s %s%n", "mean", "=", ps.mean());
+        StdOut.printf("%-23s %s %s%n", "stddev", "=", ps.stddev());
+        StdOut.println("95% confidence interval = " + conf);
     }
 }
