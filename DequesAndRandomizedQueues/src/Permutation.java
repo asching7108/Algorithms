@@ -3,7 +3,14 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 /**
- * The client class takes an integer k as a command-line argument; reads a sequence of strings from standard input using StdIn.readString(); and prints exactly k of them, uniformly at random. Print each item from the sequence at most once.
+ * The client class takes an integer k as a command-line argument; reads a
+ * sequence of strings from standard input using StdIn.readString(); and
+ * prints exactly k of them, uniformly at random. Print each item from the
+ * sequence at most once.
+ * Time Complexity: O(n) where n is the number of string on standard input
+ * Space Complexity: O(k)
+ *
+ * @author Esther Lin
  */
 
 public class Permutation {
