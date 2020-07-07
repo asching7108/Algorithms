@@ -2,3 +2,4 @@
 .idea/
 .lift/
 *.iml
+*.class

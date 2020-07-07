@@ -11,15 +11,20 @@ Assignments and data structure implementation of the Algorithms Part I and II co
 
 ### Part I
 
-- Union-Find (Assignment: Percolation)
+- Union-Find
+	- Assignment: Percolation
 - Analysis of Algorithms
-- Stacks and Queues (Assignment: Deques and Randomized Queues)
+- Stacks and Queues
+	- Assignment: Deques and Randomized Queues
 - Elementary Sort
-- Mergesort (Assignment: Collinear Points)
+- Mergesort
+	- Assignment: Collinear Points
 - Quicksort
-- Priority Queues (Assignment: 8 Puzzle)
+- Priority Queues
+	- Assignment: 8 Puzzle
 - Elementary Symbol Table
 - Balanced Search Tree
-- Germetric Application of BSTs (Assignment: Kd-Trees)
+- Germetric Application of BSTs
+	- Assignment: Kd-Trees
 - Hash Tables
 - Symbol Table Application
