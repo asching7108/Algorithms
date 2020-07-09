@@ -26,6 +26,20 @@ public class TestDataStructures {
             System.out.print(i + " ");
         }
         System.out.println();
+
+        Integer[] ms = new Integer[]{5, 4, 2, 7, 4, 6, 9, 8, 1, 1, 3, 1, 2};
+        MergesortBU.sort(ms);
+        for (Integer i : ms) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+
+        Integer[] msbu = new Integer[]{5, 4, 2, 7, 4, 6, 9, 8, 1, 1, 3, 1, 2};
+        MergesortBU.sort(msbu);
+        for (Integer i : msbu) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
     }
 
 }
