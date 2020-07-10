@@ -1,11 +1,14 @@
-# Algorithms by Princeton University
+# Algorithms I & II by Princeton University
 
 Assignments and data structure implementation of the Algorithms Part I and II courses.
 
-## Courses on Coursera
+## Course Info
 
-- [Algorithms, Part I](https://www.coursera.org/learn/algorithms-part1)
-- [Algorithms, Part II](https://www.coursera.org/learn/algorithms-part2)
+- Websites
+	- [Algorithms, Part I](https://www.coursera.org/learn/algorithms-part1)
+	- [Algorithms, Part II](https://www.coursera.org/learn/algorithms-part2)
+- Instructors: Kevin Wayne, Robert Sedgewick
+- Language: Java
 
 ## Topics
 
