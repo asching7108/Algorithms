@@ -1,17 +1,27 @@
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
+
+/**
+ * SAP tasks in a digraph, and finds the distance of the shortest ancestral path
+ * and the common ancestor that participates in the path given two vertices or
+ * two sets of vertices.
+ *
+ * @author Esther Lin
+ */
 
 public class SAP {
 
-    class SapObj {
-        int length;
-        int ancestor;
+    // stores the computed length and ancestor
+    private class SapObj {
+        private final int length;
+        private final int ancestor;
 
         SapObj(int length, int ancestor) {
             this.length = length;
@@ -19,11 +29,9 @@ public class SAP {
         }
     }
 
-    private Digraph G;
+    private final Digraph G;
     // store the length and ancestor for every vertex v to every vertex w
-    private Map<Integer, Map<Integer, SapObj>> map;
-    // store the length and ancestor for every vertices set v to every vertices set w
-    private Map<Iterable<Integer>, Map<Iterable<Integer>, SapObj>> setMap;
+    private final Map<Integer, Map<Integer, SapObj>> map;
 
     // constructor takes a digraph (not necessarily a DAG)
     public SAP(Digraph G) {
@@ -31,16 +39,12 @@ public class SAP {
             throw new IllegalArgumentException("Arguments contain null");
         this.G = new Digraph(G);
         map = new HashMap<>();
-        setMap = new HashMap<>();
     }
 
     // length of shortest ancestral path between v and w; -1 if no such path
     public int length(int v, int w) {
-        if (v < 0 || v >= G.V() || w < 0 || w >= G.V())
-            throw new IllegalArgumentException("Argument(s) out of range");
-
-        // make sure v < w
-        if (v > w) {
+        // make sure v <= w
+        if (w < v) {
             int temp = v;
             v = w;
             w = temp;
@@ -50,13 +54,11 @@ public class SAP {
         return map.get(v).get(w).length;
     }
 
-    // a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path
+    // a common ancestor of v and w that participates in a shortest ancestral path;
+    // -1 if no such path
     public int ancestor(int v, int w) {
-        if (v < 0 || v >= G.V() || w < 0 || w >= G.V())
-            throw new IllegalArgumentException("Argument(s) out of range");
-
-        // make sure v < w
-        if (v > w) {
+        // make sure v <= w
+        if (w < v) {
             int temp = v;
             v = w;
             w = temp;
@@ -76,32 +78,34 @@ public class SAP {
         BreadthFirstDirectedPaths bfsV = new BreadthFirstDirectedPaths(G, v);
         BreadthFirstDirectedPaths bfsW = new BreadthFirstDirectedPaths(G, w);
 
-        Queue<Integer> curQ = new ArrayDeque<>();
-        Queue<Integer> nextQ = new ArrayDeque<>();
+        Queue<Integer> curQ = new Queue<>();
+        Queue<Integer> nextQ = new Queue<>();
         boolean[] visited = new boolean[G.V()];
-        curQ.offer(v);
-        curQ.offer(w);
+        curQ.enqueue(v);
+        curQ.enqueue(w);
 
         int curLen = 0, length = -1, ancestor = -1;
 
         // perform search of shortest ancestral path by level
         while (!curQ.isEmpty() && (length == -1 || curLen < length)) {
-            int cur = curQ.poll();
-            if (visited[cur]) continue;
-            // cur is a common ancestor of v and w
-            if (bfsV.hasPathTo(cur) && bfsW.hasPathTo(cur)) {
-                int len = bfsV.distTo(cur) + bfsW.distTo(cur);
-                // cur participates in the shortest ancestral path so far
-                if (length == -1 || len < length) {
-                    ancestor = cur;
-                    length = len;
+            int cur = curQ.dequeue();
+            if (!visited[cur]) {
+                // cur is a common ancestor of v and w
+                if (bfsV.hasPathTo(cur) && bfsW.hasPathTo(cur)) {
+                    int len = bfsV.distTo(cur) + bfsW.distTo(cur);
+                    // cur participates in the shortest ancestral path so far
+                    if (length == -1 || len < length) {
+                        ancestor = cur;
+                        length = len;
+                    }
                 }
+                // add vertices of next level to the queue
+                for (Integer i : G.adj(cur)) {
+                    nextQ.enqueue(i);
+                }
+                visited[cur] = true;
             }
-            visited[cur] = true;
-            // add vertices of next level to the queue
-            for (Integer i : G.adj(cur)) {
-                nextQ.offer(i);
-            }
+
             // curr level search finished, continue to search the next level
             if (curQ.isEmpty()) {
                 Queue<Integer> temp = curQ;
@@ -115,66 +119,68 @@ public class SAP {
         map.put(v, mapV);
     }
 
-    // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
+    // length of shortest ancestral path between any vertex in v and any vertex
+    // in w; -1 if no such path
     public int length(Iterable<Integer> v, Iterable<Integer> w) {
         if (v == null || w == null)
-            throw new IllegalArgumentException("Arguments contain null");
-        BreadthFirstDirectedPaths bfs = new BreadthFirstDirectedPaths(G, v);
-        int length = Integer.MAX_VALUE;
-        for (Integer i : w) {
-            length = Math.max(length, bfs.distTo(i));
-        }
-        return length;
+            throw new IllegalArgumentException("arguments contain null");
+
+        // detect zero-length vertices
+        if (!v.iterator().hasNext() || !w.iterator().hasNext())
+            return -1;
+
+        return bfs(v, w, true);
     }
 
     // a common ancestor that participates in shortest ancestral path; -1 if no such path
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
         if (v == null || w == null)
-            throw new IllegalArgumentException("Arguments contain null");
+            throw new IllegalArgumentException("arguments contain null");
 
-        return 0;
+        // detect zero-length vertices
+        if (!v.iterator().hasNext() || !w.iterator().hasNext())
+            return -1;
+
+        return bfs(v, w, false);
     }
 
     // use bfs to find the length and ancestor for v and w
-    private void bfs(Iterable<Integer> v, Iterable<Integer> w) {
-        Map<Iterable<Integer>, SapObj> mapV = setMap.getOrDefault(v, new HashMap<>());
-
-        // return directly if already found
-        if (mapV.containsKey(w)) return;
-
+    private int bfs(Iterable<Integer> v, Iterable<Integer> w, boolean getLength) {
         BreadthFirstDirectedPaths bfsV = new BreadthFirstDirectedPaths(G, v);
         BreadthFirstDirectedPaths bfsW = new BreadthFirstDirectedPaths(G, w);
 
-        Queue<Integer> curQ = new ArrayDeque<>();
-        Queue<Integer> nextQ = new ArrayDeque<>();
+        Queue<Integer> curQ = new Queue<>();
+        Queue<Integer> nextQ = new Queue<>();
         boolean[] visited = new boolean[G.V()];
         for (Integer i : v) {
-            curQ.offer(i);
+            curQ.enqueue(i);
         }
         for (Integer i : w) {
-            curQ.offer(i);
+            curQ.enqueue(i);
         }
 
         int curLen = 0, length = -1, ancestor = -1;
 
         // perform search of shortest ancestral path by level
         while (!curQ.isEmpty() && (length == -1 || curLen < length)) {
-            int cur = curQ.poll();
-            if (visited[cur]) continue;
-            // cur is a common ancestor of v and w
-            if (bfsV.hasPathTo(cur) && bfsW.hasPathTo(cur)) {
-                int len = bfsV.distTo(cur) + bfsW.distTo(cur);
-                // cur participates in the shortest ancestral path so far
-                if (length == -1 || len < length) {
-                    ancestor = cur;
-                    length = len;
+            int cur = curQ.dequeue();
+            if (!visited[cur]) {
+                // cur is a common ancestor of v and w
+                if (bfsV.hasPathTo(cur) && bfsW.hasPathTo(cur)) {
+                    int len = bfsV.distTo(cur) + bfsW.distTo(cur);
+                    // cur participates in the shortest ancestral path so far
+                    if (length == -1 || len < length) {
+                        ancestor = cur;
+                        length = len;
+                    }
                 }
+                // add vertices of next level to the queue
+                for (Integer i : G.adj(cur)) {
+                    nextQ.enqueue(i);
+                }
+                visited[cur] = true;
             }
-            visited[cur] = true;
-            // add vertices of next level to the queue
-            for (Integer i : G.adj(cur)) {
-                nextQ.offer(i);
-            }
+
             // curr level search finished, continue to search the next level
             if (curQ.isEmpty()) {
                 Queue<Integer> temp = curQ;
@@ -184,8 +190,8 @@ public class SAP {
             }
         }
 
-        mapV.put(w, new SapObj(length, ancestor));
-        setMap.put(v, mapV);
+        if (getLength) return length;
+        return ancestor;
     }
 
     // do unit testing of this class
